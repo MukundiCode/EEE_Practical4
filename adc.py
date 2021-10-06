@@ -32,7 +32,7 @@ def read_adc():
 	mcp = MCP.MCP3008(spi, cs)
 
 	# create an analog input channel on pin 0
-	chan = AnalogIn(mcp, MCP.P0)
+	chan = AnalogIn(mcp, MCP.P2)
 
 	# create analog input channel on pin 1
 	chan1 = AnalogIn(mcp, MCP.P1)
@@ -59,9 +59,11 @@ def my_callback(BTN):
 def sensor_temp(adc_value):
 	"""Temperature calculation"""
 
-	temp = adc_value*(3.3/1024)
-	temp = temp - 0.5    # calibrating to 0 degrees C (500mV)
-	temp = temp/0.01   # temperature coefficient (10mV/C)
+	voltage = adc_value*(3.3/1024.0)
+	temp = ((voltage - 0.5)/10)
+	#temp = temp - 0.5    # calibrating to 0 degrees C (500mV)
+	#temp = temp/0.01   # temperature coefficient (10mV/C)
+	t = (temp - 500)/10
 	return temp
 
 #setup()
@@ -73,12 +75,13 @@ while True:
 	x.start()
 	x.join()
 	end = time.time()
-	print("{:<15} {:<15} {:<15.1f} {:>2} {:<15}".format(str(math.floor((end-start)))+"s", chan1.value,sensor_temp(chan1.value), "C", chan3.value))
+	print("{:<15} {:<15} {:<15.1f} {:>2} {:<15}".format(str(math.floor((end-start)))+"s", chan.value,sensor_temp(chan.value), "C", chan1.value))
 	if i >= 2:
 		i=0
 
-	if chan.value == 0:
-		print("Button pressed!!")
-		i += 1
-	time.sleep(sampling[i])
+	#if chan.value == 0:
+	#	print("Button pressed!!")
+	#	i += 1
+	#time.sleep(sampling[i])
+	time.sleep(1)
 	pass
