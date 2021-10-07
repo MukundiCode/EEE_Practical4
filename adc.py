@@ -15,13 +15,17 @@ SCLK = 23
 MISO = 21
 MOSI = 19
 CE0 = 24
-BTN = 26
 sampling = [10, 5, 1] #different time intervals
 global i
 i = 0 #sampling index for different time intervals
 
-def change_sample():
-	if i == 2:
+#setting up button
+BTN = digitalio.DigitalInOut(board.D7)
+BTN.direction = digitalio.Direction.INPUT
+BTN.pull = digitalio.Pull.DOWN
+
+def change_sample(a):
+	if a == 2:
 		i = 0
 	else:
 		i= i+1
@@ -48,10 +52,10 @@ def read_adc():
 	chan3 = AnalogIn(mcp, MCP.P3)
 
 #GPIO.setmode(GPIO.BOARD)
-GPIO.setup(BTN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#GPIO.setup(BTN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 #GPIO.setup(BTN, GPIO.OUT)
 #GPIO.output(BTN, GPIO.HIGH)
-GPIO.add_event_detect(BTN, GPIO.RISING, callback= change_sample, bouncetime=300)
+#GPIO.add_event_detect(BTN, GPIO.RISING, callback= change_sample, bouncetime=300)
 
 #attempt at implementing interrupt
 def my_callback():
@@ -81,8 +85,10 @@ while True:
 	x = threading.Thread(target=read_adc)
 	x.start()
 	x.join()
-	end = time.time()
-	if BTN.value 
+	end = time.time() 
 	print("{:<15} {:<15} {:<15.1f} {:>2} {:<15}".format(str(math.floor((end-start)))+"s", chan.value,sensor_temp(chan.value), "C", chan1.value))
+	print(BTN.value)
+	if BTN.value == False:
+		change_sample(i)
 	time.sleep(sampling[i])
 	pass
