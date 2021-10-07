@@ -15,10 +15,17 @@ SCLK = 23
 MISO = 21
 MOSI = 19
 CE0 = 24
-BTN = 4
+BTN = 26
 sampling = [10, 5, 1] #different time intervals
 global i
 i = 0 #sampling index for different time intervals
+
+def change_sample():
+	if i == 2:
+		i = 0
+	else:
+		i= i+1
+	print("Button Pressed")
 
 def read_adc():
 	global spi, cs, mcp, chan, chan1, chan3 
@@ -41,13 +48,13 @@ def read_adc():
 	chan3 = AnalogIn(mcp, MCP.P3)
 
 #GPIO.setmode(GPIO.BOARD)
-#GPIO.setup(BTN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(BTN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 #GPIO.setup(BTN, GPIO.OUT)
 #GPIO.output(BTN, GPIO.HIGH)
-#GPIO.add_event_detect(BTN, GPIO.RISING, callback=my_callback, bouncetime=300)
+GPIO.add_event_detect(BTN, GPIO.RISING, callback= change_sample, bouncetime=300)
 
 #attempt at implementing interrupt
-def my_callback(BTN):
+def my_callback():
 	""" 
 	THIS CHANGES THE SAMPLING INTERVALS; 10s, 5s, 1s
 	"""
@@ -75,13 +82,7 @@ while True:
 	x.start()
 	x.join()
 	end = time.time()
+	if BTN.value 
 	print("{:<15} {:<15} {:<15.1f} {:>2} {:<15}".format(str(math.floor((end-start)))+"s", chan.value,sensor_temp(chan.value), "C", chan1.value))
-	if i >= 2:
-		i=0
-
-	#if chan.value == 0:
-	#	print("Button pressed!!")
-	#	i += 1
-	#time.sleep(sampling[i])
-	time.sleep(1)
+	time.sleep(sampling[i])
 	pass
