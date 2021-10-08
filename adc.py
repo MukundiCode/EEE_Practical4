@@ -66,11 +66,8 @@ def read_adc():
 def sensor_temp(adc_value):
 	"""Temperature calculation"""
 
-	voltage = adc_value*(3.3/1024.0)
-	temp = ((voltage - 0.5)/10)
-	#temp = temp - 0.5    # calibrating to 0 degrees C (500mV)
-	#temp = temp/0.01   # temperature coefficient (10mV/C)
-	t = (temp - 500)/10
+	voltage = (adc_value * 3.3)/1024
+	temp = (adc_value-0.4)/0.01
 	return temp
 
 #setup()
@@ -87,7 +84,7 @@ def print_time_thread():
     thread.start()
     read_adc()
     #print(i)
-    print("{:<15} {:<15} {:<15.1f} {:>2} {:<15}".format(str(math.floor((time.time()-start)))+"s", chan1.value,sensor_temp(chan1.value), "C", chan2.value))
+    print("{:<15} {:<15} {:<15.1f} {:>2} {:<15}".format(str(math.floor((time.time()-start)))+"s", chan1.value,sensor_temp(chan1.voltage), "C", chan2.value))
     #print(datetime.datetime.now())
 
 
